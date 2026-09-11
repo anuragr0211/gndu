@@ -1,144 +1,749 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Eye Catching Vibe</title>
-    <style>
-        body, html {
-            margin: 0;
-            padding: 0;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            background: #000;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        #canvas {
-            display: block;
-        }
-        .content {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            text-align: center;
-            color: white;
-            pointer-events: none;
-        }
-        h1 {
-            font-size: 5rem;
-            margin: 0;
-            letter-spacing: 5px;
-            text-transform: uppercase;
-            background: linear-gradient(45deg, #ff00cc, #3333ff);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            animation: glow 2s ease-in-out infinite alternate;
-        }
-        p {
-            font-size: 1.5rem;
-            margin-top: 10px;
-            color: #ddd;
-        }
-        @keyframes glow {
-            from {
-                text-shadow: 0 0 10px rgba(255,0,204,0.3), 0 0 20px rgba(255,0,204,0.3), 0 0 30px rgba(51,51,255,0.3);
-            }
-            to {
-                text-shadow: 0 0 20px rgba(255,0,204,0.6), 0 0 30px rgba(255,0,204,0.6), 0 0 40px rgba(51,51,255,0.6), 0 0 50px rgba(51,51,255,0.6);
-            }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=5">
+<meta name="theme-color" content="#000000">
+<title>GNDU — The Rarest Standard</title>
+<meta name="description" content="panya gandu — guddu ki gun. Engineering the extraordinary.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   COLOR LAW
+   ============================================================ */
+:root{
+  --black:#000000;
+  --s1:#080808;
+  --s2:#0d0d0d;
+  --chrome-grad:linear-gradient(180deg,#ffffff 0%,#888888 50%,#ffffff 100%);
+  --border-dark:#1a1a1a;
+  --border-light:#2f2f2f;
+  --text-primary:#ffffff;
+  --text-muted:#3a3a3a;
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;overflow-x:hidden;-webkit-text-size-adjust:100%}
+body{
+  font-family:'Inter',sans-serif;
+  background:#000000;
+  color:#888888;
+  overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+  -webkit-tap-highlight-color:transparent;
+}
+::selection{background:rgba(255,255,255,0.1);color:#fff}
+::-webkit-scrollbar{width:2px}
+::-webkit-scrollbar-track{background:#000}
+::-webkit-scrollbar-thumb{background:#1a1a1a}
+a{-webkit-tap-highlight-color:transparent;color:inherit;text-decoration:none}
+
+/* ── LOADER ── */
+#loader{
+  position:fixed;inset:0;z-index:9999;
+  background:#000000;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  transition:opacity 1s,visibility 1s;
+}
+#loader.done{opacity:0;visibility:hidden;pointer-events:none}
+#loader-brand{
+  font-size:0.6rem;font-weight:900;letter-spacing:0.5em;
+  color:#fff;text-transform:uppercase;margin-bottom:2rem;
+}
+#loader-track{width:200px;height:1px;background:rgba(255,255,255,0.05);overflow:hidden}
+#loader-fill{width:0;height:100%;background:linear-gradient(90deg,#333,#fff,#333);transition:width 0.06s linear}
+#loader-pct{font-size:0.5rem;color:#333;margin-top:0.8rem;letter-spacing:0.4em;font-family:monospace}
+
+/* ── NAV ── */
+nav{
+  position:fixed;top:0;left:0;width:100%;z-index:100;
+  padding:1.2rem 3rem;
+  display:flex;justify-content:space-between;align-items:center;
+  transition:all 0.4s;
+}
+nav.scrolled{
+  background:rgba(0,0,0,0.9);
+  backdrop-filter:blur(20px);
+  -webkit-backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border-dark);
+  padding:0.8rem 3rem;
+}
+.nav-brand{font-size:0.65rem;font-weight:900;letter-spacing:0.35em;color:#ffffff;text-transform:uppercase}
+.nav-links{display:flex;gap:2.5rem;list-style:none}
+.nav-links a{
+  color:#444;font-size:0.55rem;font-weight:400;
+  letter-spacing:0.2em;text-transform:uppercase;
+  transition:color 0.2s;position:relative;
+}
+.nav-links a::after{
+  content:'';position:absolute;bottom:-4px;left:0;
+  width:0;height:1px;background:#fff;transition:width 0.3s;
+}
+.nav-links a:hover,.nav-links a.active{color:#fff}
+.nav-links a:hover::after,.nav-links a.active::after{width:100%}
+.nav-toggle{
+  display:none;flex-direction:column;gap:5px;cursor:pointer;
+  background:none;border:none;padding:6px;z-index:9995;
+}
+.nav-toggle span{display:block;width:22px;height:1px;background:#888;transition:all 0.3s}
+.nav-toggle.open span:nth-child(1){transform:translateY(6px) rotate(45deg)}
+.nav-toggle.open span:nth-child(2){opacity:0}
+.nav-toggle.open span:nth-child(3){transform:translateY(-6px) rotate(-45deg)}
+
+/* ── GLOBAL ── */
+section{position:relative;z-index:2}
+.container{width:100%;max-width:1200px;margin:0 auto;padding:0 3rem}
+.section-pad{padding:7rem 0}
+.text-center{text-align:center}
+
+/* ── TYPOGRAPHY ── */
+.micro-label{
+  font-size:0.6rem;font-weight:400;letter-spacing:0.3em;
+  text-transform:uppercase;color:#444;margin-bottom:1rem;
+}
+.chrome-grad{
+  background:var(--chrome-grad);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.section-title{font-size:5rem;font-weight:900;letter-spacing:-0.04em;color:#ffffff;line-height:0.95}
+.body-text{font-size:1.1rem;line-height:1.9;color:#888888}
+
+/* ── CHROME DIVIDER ── */
+.chrome-divider{width:100%;height:1px;background:var(--border-dark);position:relative;overflow:hidden}
+.chrome-divider::after{
+  content:'';position:absolute;top:-1px;left:-40px;
+  width:40px;height:3px;
+  background:linear-gradient(90deg,transparent,#fff,transparent);
+  animation:travelLine 3s linear infinite;
+}
+@keyframes travelLine{0%{left:-40px}100%{left:calc(100% + 40px)}}
+
+/* ── SCROLL REVEAL ── */
+.reveal{opacity:0;transform:translateY(24px);transition:opacity 0.7s ease-out,transform 0.7s ease-out}
+.reveal.vis{opacity:1;transform:translateY(0)}
+
+/* ── CTA BUTTON ── */
+.cta-btn{
+  display:inline-flex;align-items:center;gap:0.6rem;
+  padding:0 2rem;height:52px;
+  border:1px solid #333;background:transparent;
+  color:#ffffff;font-family:'Inter',sans-serif;
+  font-size:0.65rem;font-weight:700;letter-spacing:0.2em;
+  text-transform:uppercase;cursor:pointer;
+  transition:background 0.15s,color 0.15s,border-color 0.15s;
+  text-decoration:none;
+}
+.cta-btn:hover{background:#ffffff;color:#000000;border-color:#ffffff}
+
+/* ── SCROLL INDICATOR ── */
+.scroll-indicator{
+  position:absolute;bottom:2.5rem;left:50%;transform:translateX(-50%);
+  display:flex;flex-direction:column;align-items:center;gap:0.5rem;z-index:10;
+}
+.scroll-line{width:1px;height:60px;background:rgba(255,255,255,0.1);position:relative;overflow:hidden}
+.scroll-dot{
+  position:absolute;top:-6px;left:-2px;
+  width:5px;height:5px;border-radius:50%;background:#fff;
+  animation:scrollDot 2s ease-in-out infinite;
+}
+@keyframes scrollDot{0%{top:-6px;opacity:0}20%{opacity:1}100%{top:60px;opacity:0}}
+
+/* ── HERO ── */
+#hero{
+  min-height:100vh;min-height:100svh;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  padding:0;overflow:hidden;position:relative;
+}
+#hero-canvas{position:absolute;inset:0;z-index:0;width:100%;height:100%}
+.hero-content{
+  position:absolute;right:40px;bottom:40px;
+  text-align:right;width:520px;z-index:100;left:auto;transform:none;
+}
+.hero-micro{
+  font-size:0.5rem;font-weight:400;letter-spacing:0.35em;
+  text-transform:uppercase;color:#333;margin-bottom:2rem;
+}
+.hero-brand{
+  font-size:clamp(3rem,10vw,8rem);font-weight:900;
+  letter-spacing:-0.06em;line-height:0.85;
+  background:linear-gradient(180deg,#ffffff 0%,#888888 50%,#ffffff 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  margin-bottom:0.4rem;display:block;
+}
+.hero-brand-sub{
+  font-size:clamp(1.8rem,6vw,5rem);font-weight:900;
+  letter-spacing:-0.05em;line-height:0.85;
+  background:linear-gradient(180deg,#aaaaaa 0%,#444444 50%,#aaaaaa 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  margin-bottom:1.8rem;display:block;
+}
+.hero-tagline{
+  font-size:1rem;font-weight:400;color:#c0c0c0;
+  min-height:2em;margin-bottom:1.5rem;letter-spacing:0.01em;
+}
+.hero-tagline .cursor{
+  display:inline-block;width:2px;height:1em;
+  background:#c0c0c0;margin-left:3px;vertical-align:middle;
+  animation:blink 0.7s step-end infinite;
+}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+.hero-desc{
+  font-size:0.9rem;line-height:1.9;color:#555;
+  max-width:480px;margin:0 0 2rem auto;
+  opacity:0;transform:translateY(20px);
+  transition:opacity 1s 1s,transform 1s 1s;
+}
+.hero-desc.vis{opacity:1;transform:translateY(0)}
+
+/* ── STANDARD BLOCKS ── */
+.standard-block{
+  display:grid;grid-template-columns:60px 200px 1fr;
+  align-items:start;gap:2rem;padding:2.5rem 0;
+  border-top:1px solid var(--border-dark);
+  opacity:0;transform:translateX(-30px);
+  transition:opacity 0.6s,transform 0.6s;
+}
+.standard-block.vis{opacity:1;transform:translateX(0)}
+.standard-block:last-child{border-bottom:1px solid var(--border-dark)}
+.std-num{font-size:0.6rem;letter-spacing:0.3em;color:#2a2a2a;font-family:monospace;padding-top:0.2rem}
+.std-heading{font-size:1.5rem;font-weight:700;color:#ffffff;letter-spacing:-0.02em;line-height:1.2}
+.std-body{font-size:1rem;line-height:1.9;color:#666}
+
+/* ── STATS ROW ── */
+.stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:0;margin:4rem 0}
+.stat-block{padding:3rem;border-right:1px solid var(--border-dark);position:relative}
+.stat-block:last-child{border-right:none}
+.stat-number{
+  font-size:7rem;font-weight:900;letter-spacing:-0.05em;line-height:1;display:block;
+  background:var(--chrome-grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.stat-label{font-size:0.65rem;letter-spacing:0.2em;text-transform:uppercase;color:#444;margin-top:0.5rem;display:block}
+
+/* ── PARTNER SECTION ── */
+.partner-closing-line{
+  font-size:2.2rem;font-weight:700;color:#ffffff;
+  text-align:center;line-height:1.4;letter-spacing:-0.02em;
+  opacity:0;transform:translateY(30px);transition:opacity 1s,transform 1s;
+}
+.partner-closing-line.vis{opacity:1;transform:translateY(0)}
+.partner-final{
+  font-size:4rem;font-weight:900;letter-spacing:-0.04em;text-align:center;
+  background:linear-gradient(180deg,#ffffff 0%,#888888 50%,#ffffff 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  filter:drop-shadow(0 0 40px rgba(255,255,255,0.15));
+  opacity:0;transform:translateY(20px);transition:opacity 1s 0.3s,transform 1s 0.3s;
+}
+.partner-final.vis{opacity:1;transform:translateY(0)}
+
+/* ── FOOTER ── */
+footer{border-top:1px solid var(--border-dark);padding:4rem 0 2.5rem;background:#000}
+.footer-contacts{display:flex;flex-wrap:wrap;justify-content:center;gap:3rem;margin-bottom:3rem}
+.footer-item{
+  display:flex;align-items:center;gap:0.8rem;
+  font-size:0.85rem;color:#555;transition:color 0.15s;position:relative;
+}
+.footer-item::after{content:'';position:absolute;bottom:-2px;left:0;width:0;height:1px;background:#fff;transition:width 0.2s}
+.footer-item:hover{color:#fff}
+.footer-item:hover::after{width:100%}
+.footer-item svg{flex-shrink:0;color:#333;transition:color 0.15s}
+.footer-item:hover svg{color:#fff}
+.footer-tagline{font-size:0.65rem;letter-spacing:0.3em;text-transform:uppercase;color:#2a2a2a;text-align:center}
+.footer-copy{font-size:0.55rem;color:#111;text-align:center;margin-top:1.5rem;letter-spacing:0.1em}
+
+/* ── MOBILE ── */
+@media(max-width:768px){
+  nav{padding:1rem 1.5rem}
+  nav.scrolled{padding:0.7rem 1.5rem}
+  .container{padding:0 1.5rem}
+  .hero-content{
+    position:relative;right:auto;bottom:auto;left:auto;transform:none;
+    width:100%;text-align:left;padding:55vh 1.5rem 3rem;margin-top:0;
+  }
+  #hero{justify-content:flex-start;align-items:flex-start}
+  .nav-links{
+    position:fixed !important;top:0 !important;left:0 !important;right:0 !important;bottom:0 !important;
+    width:100vw !important;height:100vh !important;background:#000 !important;
+    flex-direction:column;justify-content:center;align-items:center;
+    gap:2.5rem;opacity:0;visibility:hidden;
+    transition:opacity 0.3s,visibility 0.3s;z-index:9990 !important;
+  }
+  .nav-links.open{opacity:1 !important;visibility:visible !important}
+  .nav-links a{font-size:0.9rem}
+  .nav-toggle{display:flex}
+  .section-title{font-size:2.5rem}
+  .stats-row{grid-template-columns:1fr}
+  .stat-block{border-right:none;border-bottom:1px solid var(--border-dark)}
+  .stat-number{font-size:4.5rem}
+  .standard-block{grid-template-columns:40px 1fr;grid-template-rows:auto auto}
+  .std-body{grid-column:1/-1}
+  .partner-closing-line{font-size:1.5rem}
+  .partner-final{font-size:2.5rem}
+  .footer-contacts{flex-direction:column;align-items:center;gap:1.5rem}
+  .section-pad{padding:4rem 0}
+  .hero-desc{margin:0 0 2rem;font-size:0.85rem}
+  .cta-btn{width:100%;justify-content:center}
+  .hero-brand-sub{font-size:clamp(1.2rem,7vw,3rem)}
+}
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:0.01ms!important;transition-duration:0.01ms!important}
+}
+</style>
 </head>
 <body>
-    <canvas id="canvas"></canvas>
-    <div class="content">
-        <h1>panya gandu</h1>
-        <h1>guddu ki gun</h1>
-        <p>Interactive Particle Experience</p>
+
+<!-- LOADER -->
+<div id="loader">
+  <div id="loader-brand">GNDU</div>
+  <div id="loader-track"><div id="loader-fill"></div></div>
+  <div id="loader-pct">0%</div>
+</div>
+
+<!-- NAV -->
+<nav id="navbar">
+  <a href="#hero" class="nav-brand">GNDU</a>
+  <ul class="nav-links" id="nav-links">
+    <li><a href="#hero" class="active">Home</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#standards">Standards</a></li>
+    <li><a href="#partner">Partner</a></li>
+    <li><a href="#contact-footer">Contact</a></li>
+  </ul>
+  <button class="nav-toggle" id="nav-toggle" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <canvas id="hero-canvas"></canvas>
+  <div class="hero-content">
+    <div class="hero-micro">GNDU &mdash; THE RAREST STANDARD &mdash; EST. 2024</div>
+    <span class="hero-brand">panya gandu</span>
+    <span class="hero-brand-sub">guddu ki gun</span>
+    <div class="hero-tagline"><span id="typed-text"></span><span class="cursor"></span></div>
+    <div class="hero-desc" id="hero-desc">
+      There are websites that exist. And then there are websites that matter.
+      This is the latter — built with precision, fuelled by chaos, and dedicated
+      to the highest standard of absolute absurdity.
+    </div>
+    <a href="#about" class="cta-btn" id="hero-cta" style="opacity:0;transition:opacity 1s">
+      Explore the Madness
+    </a>
+  </div>
+  <div class="scroll-indicator">
+    <div class="scroll-line"><div class="scroll-dot"></div></div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about" class="section-pad" style="border-top:1px solid var(--border-dark)">
+  <div class="container">
+    <div class="micro-label reveal text-center">Our Identity</div>
+    <h2 class="section-title reveal text-center" style="margin-bottom:3rem">Who We Are</h2>
+    <div class="chrome-divider" style="margin-bottom:4rem"></div>
+
+    <div class="stats-row">
+      <div class="stat-block">
+        <span class="stat-number">01</span>
+        <span class="stat-label">Legends in the Making</span>
+      </div>
+      <div class="stat-block">
+        <span class="stat-number">&infin;</span>
+        <span class="stat-label">Energy Unleashed</span>
+      </div>
+      <div class="stat-block">
+        <span class="stat-number">00</span>
+        <span class="stat-label">Rules Followed</span>
+      </div>
     </div>
 
-    <script>
-        const canvas = document.getElementById('canvas');
-        const ctx = canvas.getContext('2d');
-        
-        let width, height;
-        let particles = [];
-        const numParticles = 200;
-        
-        let mouse = { x: null, y: null };
-        
-        function resize() {
-            width = canvas.width = window.innerWidth;
-            height = canvas.height = window.innerHeight;
-        }
-        
-        window.addEventListener('resize', resize);
-        window.addEventListener('mousemove', (e) => {
-            mouse.x = e.x;
-            mouse.y = e.y;
-        });
-        
-        class Particle {
-            constructor() {
-                this.x = Math.random() * width;
-                this.y = Math.random() * height;
-                this.size = Math.random() * 3 + 1;
-                this.speedX = Math.random() * 3 - 1.5;
-                this.speedY = Math.random() * 3 - 1.5;
-                this.color = `hsl(${Math.random() * 360}, 100%, 50%)`;
-                this.baseSize = this.size;
-            }
-            update() {
-                this.x += this.speedX;
-                this.y += this.speedY;
-                
-                if (this.x < 0 || this.x > width) this.speedX *= -1;
-                if (this.y < 0 || this.y > height) this.speedY *= -1;
-                
-                if (mouse.x && mouse.y) {
-                    let dx = mouse.x - this.x;
-                    let dy = mouse.y - this.y;
-                    let distance = Math.sqrt(dx * dx + dy * dy);
-                    if (distance < 150) {
-                        this.x -= dx / 15;
-                        this.y -= dy / 15;
-                        this.size = this.baseSize * 2;
-                    } else {
-                        this.size = this.baseSize;
-                    }
-                }
-            }
-            draw() {
-                ctx.fillStyle = this.color;
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                ctx.fill();
-            }
-        }
-        
-        function init() {
-            particles = [];
-            for (let i = 0; i < numParticles; i++) {
-                particles.push(new Particle());
-            }
-        }
-        
-        function animate() {
-            ctx.fillStyle = 'rgba(0, 0, 0, 0.1)'; // creates trail effect
-            ctx.fillRect(0, 0, width, height);
-            
-            for (let i = 0; i < particles.length; i++) {
-                particles[i].update();
-                particles[i].draw();
-            }
-            requestAnimationFrame(animate);
-        }
-        
-        resize();
-        init();
-        animate();
-    </script>
+    <div class="chrome-divider" style="margin:4rem 0"></div>
+
+    <p class="body-text reveal text-center" style="max-width:700px;margin:0 auto">
+      We don&rsquo;t follow the playbook. We write our own. Fuelled by audacity,
+      raw talent, and a complete disregard for the ordinary — we exist at the
+      intersection of chaos and genius.
+    </p>
+  </div>
+</section>
+
+<!-- STANDARDS -->
+<section id="standards" class="section-pad" style="border-top:1px solid var(--border-dark)">
+  <div class="container">
+    <div class="micro-label reveal text-center">Our Philosophy</div>
+    <h2 class="section-title reveal text-center" style="margin-bottom:2rem">The GNDU Standard</h2>
+    <p class="body-text reveal text-center" style="max-width:700px;margin:0 auto 3rem">
+      Every move we make is held to five absolute principles:
+    </p>
+
+    <div id="standard-blocks">
+      <div class="standard-block">
+        <div class="std-num">01</div>
+        <div class="std-heading">Uncompromising Audacity</div>
+        <div class="std-body">We do not do what has been done. We do what no one dared to do. Every decision traces back to a single question — is this legendary enough?</div>
+      </div>
+      <div class="standard-block">
+        <div class="std-num">02</div>
+        <div class="std-heading">Raw, Unfiltered Energy</div>
+        <div class="std-body">Precision meets chaos. Structure meets madness. We operate in the rarest frequency — where brilliance and absurdity are the same thing.</div>
+      </div>
+      <div class="standard-block">
+        <div class="std-num">03</div>
+        <div class="std-heading">Zero Compromise on Vibes</div>
+        <div class="std-body">The aesthetic is non-negotiable. The vibe is law. We live and die by the energy we carry into every room, every project, every line of code.</div>
+      </div>
+      <div class="standard-block">
+        <div class="std-num">04</div>
+        <div class="std-heading">Scalable Chaos</div>
+        <div class="std-body">What works for one should shake the entire world. We design for impact at scale — because small thinking is for small people.</div>
+      </div>
+      <div class="standard-block">
+        <div class="std-num">05</div>
+        <div class="std-heading">Absolute Accountability</div>
+        <div class="std-body">Every move. Every word. Every line. Backed by the same commitment to being the most real, the most raw, and the most relentless version of ourselves.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PARTNER -->
+<section id="partner" style="min-height:100vh;display:flex;align-items:center;padding:8rem 0;border-top:1px solid var(--border-dark)">
+  <div class="container text-center">
+    <div class="micro-label reveal text-center">Ready to Roll</div>
+    <h2 style="font-size:clamp(2.5rem,10vw,6rem);font-weight:900;letter-spacing:-0.05em;line-height:0.9;margin-bottom:3rem;background:linear-gradient(180deg,#fff 0%,#888 50%,#fff 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text" class="reveal">
+      Partner<br>With GNDU
+    </h2>
+
+    <p class="body-text reveal" style="max-width:680px;margin:0 auto 1rem">
+      You are not simply looking at a website. You are looking at a statement —
+      a declaration that somewhere out there, <strong style="color:#fff">panya gandu</strong> and
+      <strong style="color:#fff">guddu ki gun</strong> are rewriting the rules of what&rsquo;s possible.
+    </p>
+    <p class="body-text reveal" style="max-width:680px;margin:0 auto 3rem">
+      We are not looking for followers. We are looking for believers — the ones who understand
+      that the rarest energy, applied with discipline and an absolute refusal to be ordinary,
+      can change everything.
+    </p>
+
+    <div style="margin:3rem 0 2rem;max-width:700px;margin-left:auto;margin-right:auto">
+      <div class="partner-closing-line" id="pc1">The rarest fire is not the one that burns the brightest in a cage.</div>
+      <div class="partner-closing-line" id="pc2" style="transition-delay:0.3s">It is the one that, when set free, burns everything to the ground and builds it back stronger.</div>
+    </div>
+
+    <div class="partner-final" id="partner-final" style="margin:2rem 0 3rem">That fire is GNDU.</div>
+
+    <a href="#contact-footer" class="cta-btn reveal">Begin the Conversation</a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer id="contact-footer">
+  <div class="container">
+    <div class="footer-contacts">
+      <a href="mailto:gndu@example.com" class="footer-item">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+          <polyline points="22,6 12,13 2,6"/>
+        </svg>
+        gndu@example.com
+      </a>
+      <a href="tel:+919999999999" class="footer-item">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.35 2 2 0 0 1 3.6 1H6.6a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.56a16 16 0 0 0 5.55 5.55l.95-.94a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 21 16.92z"/>
+        </svg>
+        +91-99999 99999
+      </a>
+      <div class="footer-item">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+          <circle cx="12" cy="10" r="3"/>
+        </svg>
+        India
+      </div>
+    </div>
+    <div class="footer-tagline">GNDU &mdash; panya gandu. guddu ki gun. Rarest Standard.</div>
+    <div class="footer-copy">&copy; 2024 GNDU. All rights reserved.</div>
+  </div>
+</footer>
+
+<!-- THREE.JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+'use strict';
+
+const IS_MOBILE = window.innerWidth <= 768;
+const DPR = Math.min(window.devicePixelRatio, 2);
+let mouseNX = 0, mouseNY = 0;
+
+/* ── LOADER ── */
+(function(){
+  const fill = document.getElementById('loader-fill');
+  const pct  = document.getElementById('loader-pct');
+  const ldr  = document.getElementById('loader');
+  let p = 0;
+  const iv = setInterval(() => {
+    p += Math.random() * 12 + 4;
+    if(p > 100) p = 100;
+    fill.style.width = p + '%';
+    pct.textContent = Math.floor(p) + '%';
+    if(p >= 100){
+      clearInterval(iv);
+      setTimeout(() => { ldr.classList.add('done'); initAll(); }, 400);
+    }
+  }, 50);
+})();
+
+/* ── MOUSE ── */
+window.addEventListener('mousemove', e => {
+  mouseNX = (e.clientX / window.innerWidth) * 2 - 1;
+  mouseNY = -(e.clientY / window.innerHeight) * 2 + 1;
+});
+
+/* ── NAV ── */
+function initNav(){
+  const nav    = document.getElementById('navbar');
+  const toggle = document.getElementById('nav-toggle');
+  const links  = document.getElementById('nav-links');
+
+  window.addEventListener('scroll', () =>
+    nav.classList.toggle('scrolled', window.scrollY > 60), {passive:true});
+
+  toggle.addEventListener('click', () => {
+    toggle.classList.toggle('open');
+    links.classList.toggle('open');
+    document.body.style.overflow = links.classList.contains('open') ? 'hidden' : '';
+  });
+
+  document.querySelectorAll('.nav-links a').forEach(a => {
+    a.addEventListener('click', () => {
+      toggle.classList.remove('open');
+      links.classList.remove('open');
+      document.body.style.overflow = '';
+    });
+  });
+
+  const secs = document.querySelectorAll('section[id]');
+  let ticking = false;
+  window.addEventListener('scroll', () => {
+    if(!ticking){
+      requestAnimationFrame(() => {
+        let cur = '';
+        secs.forEach(s => { if(window.scrollY >= s.offsetTop - 200) cur = s.id; });
+        document.querySelectorAll('.nav-links a').forEach(a =>
+          a.classList.toggle('active', a.getAttribute('href') === '#' + cur));
+        ticking = false;
+      });
+      ticking = true;
+    }
+  }, {passive:true});
+}
+
+/* ── CHROME ENV MAP ── */
+function makeChromeEnvMap(){
+  const size = IS_MOBILE ? 64 : 128;
+  const cols = [
+    ['#1a1a1a','#555','#2a2a2a'], ['#333','#888','#1a1a1a'],
+    ['#555','#aaa','#3a3a3a'],   ['#0a0a0a','#333','#111'],
+    ['#444','#999','#222'],      ['#222','#666','#1a1a1a']
+  ];
+  const faces = cols.map(c => {
+    const cv = document.createElement('canvas');
+    cv.width = cv.height = size;
+    const ctx = cv.getContext('2d');
+    const g = ctx.createLinearGradient(0, 0, size, size);
+    g.addColorStop(0, c[0]); g.addColorStop(0.5, c[1]); g.addColorStop(1, c[2]);
+    ctx.fillStyle = g; ctx.fillRect(0, 0, size, size);
+    for(let j = 0; j < 80; j++){
+      ctx.beginPath();
+      ctx.arc(Math.random()*size, Math.random()*size, Math.random()*2+0.5, 0, Math.PI*2);
+      ctx.fillStyle = `rgba(255,255,255,${Math.random()*0.08})`; ctx.fill();
+    }
+    return cv;
+  });
+  const tex = new THREE.CubeTexture(faces);
+  tex.needsUpdate = true;
+  return tex;
+}
+
+/* ── HERO THREE.JS SCENE ── */
+function initHeroScene(){
+  const canvas = document.getElementById('hero-canvas');
+  let W = window.innerWidth, H = window.innerHeight;
+
+  const renderer = new THREE.WebGLRenderer({canvas, alpha:false, antialias:!IS_MOBILE});
+  renderer.setSize(W, H);
+  renderer.setPixelRatio(DPR);
+  renderer.setClearColor(0x000000, 1);
+
+  const scene  = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(50, W/H, 0.1, 200);
+  camera.position.z = 8;
+
+  // Lights
+  scene.add(new THREE.AmbientLight(0xffffff, 0.5));
+  [[5,5,5],[-5,5,5],[5,-5,5],[-5,-5,5]].forEach(p => {
+    const l = new THREE.PointLight(0xffffff, 2, 30);
+    l.position.set(...p); scene.add(l);
+  });
+
+  // Perspective grid floor
+  const gridMat = new THREE.LineBasicMaterial({color:0x111111});
+  const gridSize = 40, gridDivs = 20;
+  const gridGroup = new THREE.Group();
+  for(let i = -gridDivs/2; i <= gridDivs/2; i++){
+    const t = i * (gridSize/gridDivs);
+    const lH = new THREE.BufferGeometry().setFromPoints([
+      new THREE.Vector3(-gridSize/2, -4, t), new THREE.Vector3(gridSize/2, -4, t)]);
+    const lV = new THREE.BufferGeometry().setFromPoints([
+      new THREE.Vector3(t, -4, -gridSize/2), new THREE.Vector3(t, -4, gridSize/2)]);
+    gridGroup.add(new THREE.Line(lH, gridMat));
+    gridGroup.add(new THREE.Line(lV, gridMat));
+  }
+  scene.add(gridGroup);
+
+  // Chrome gem (octahedron)
+  const envMap = makeChromeEnvMap();
+  const gemGroup = new THREE.Group();
+
+  const gemMat = new THREE.MeshStandardMaterial({
+    color:0xffffff, metalness:1.0, roughness:0.02, envMap, envMapIntensity:3
+  });
+  const gem = new THREE.Mesh(new THREE.OctahedronGeometry(2, 0), gemMat);
+  gemGroup.add(gem);
+
+  // Inner wireframe
+  const wireMat = new THREE.MeshStandardMaterial({
+    color:0xffffff, metalness:1.0, roughness:0.01, envMap, envMapIntensity:5,
+    wireframe:true, opacity:0.25, transparent:true
+  });
+  gemGroup.add(new THREE.Mesh(new THREE.OctahedronGeometry(1.3, 0), wireMat));
+
+  gemGroup.position.x = IS_MOBILE ? 0 : -3;
+  scene.add(gemGroup);
+
+  // Particles
+  const pCount = IS_MOBILE ? 600 : 2000;
+  const pGeo   = new THREE.BufferGeometry();
+  const pPos   = new Float32Array(pCount * 3);
+  const pVel   = [];
+  for(let i = 0; i < pCount; i++){
+    pPos[i*3]   = (Math.random()-0.5)*40;
+    pPos[i*3+1] = (Math.random()-0.5)*40;
+    pPos[i*3+2] = (Math.random()-0.5)*40;
+    const speed = 0.003 + Math.random()*0.01;
+    pVel.push({x:(Math.random()-0.5)*speed, y:(Math.random()-0.5)*speed, z:(Math.random()-0.5)*speed});
+  }
+  pGeo.setAttribute('position', new THREE.BufferAttribute(pPos, 3));
+  const pMat = new THREE.PointsMaterial({color:0xffffff, size:0.04, transparent:true, opacity:0.7});
+  scene.add(new THREE.Points(pGeo, pMat));
+
+  let targetRotX = 0, targetRotY = 0;
+  let scrollY = 0;
+  window.addEventListener('scroll', () => { scrollY = window.scrollY; }, {passive:true});
+
+  const clock = new THREE.Clock();
+  (function animate(){
+    requestAnimationFrame(animate);
+    const t = clock.getElapsedTime();
+
+    // Gem rotation with mouse parallax
+    targetRotX += (mouseNY * 0.3 - targetRotX) * 0.04;
+    targetRotY += (mouseNX * 0.3 - targetRotY) * 0.04;
+    gemGroup.rotation.x = t * 0.2 + targetRotX;
+    gemGroup.rotation.y = t * 0.3 + targetRotY;
+    gemGroup.rotation.z = t * 0.1;
+
+    // Scroll effects
+    const scrollFrac = Math.min(scrollY / window.innerHeight, 1);
+    gemGroup.scale.setScalar(1 - scrollFrac * 0.5);
+    gemGroup.position.y = scrollFrac * 3;
+
+    // Particle drift
+    const pos = pGeo.attributes.position.array;
+    for(let i = 0; i < pCount; i++){
+      pos[i*3]   += pVel[i].x;
+      pos[i*3+1] += pVel[i].y;
+      pos[i*3+2] += pVel[i].z;
+      if(Math.abs(pos[i*3])   > 20) pVel[i].x *= -1;
+      if(Math.abs(pos[i*3+1]) > 20) pVel[i].y *= -1;
+      if(Math.abs(pos[i*3+2]) > 20) pVel[i].z *= -1;
+    }
+    pGeo.attributes.position.needsUpdate = true;
+
+    renderer.render(scene, camera);
+  })();
+
+  window.addEventListener('resize', () => {
+    W = window.innerWidth; H = window.innerHeight;
+    camera.aspect = W/H; camera.updateProjectionMatrix();
+    renderer.setSize(W, H);
+  });
+}
+
+/* ── TYPEWRITER ── */
+function initTypewriter(){
+  const el = document.getElementById('typed-text');
+  const phrases = [
+    'Engineering the Extraordinary.',
+    'panya gandu — approved.',
+    'guddu ki gun — certified.',
+    'Zero rules. All results.',
+    'The rarest standard.',
+  ];
+  let pi = 0, ci = 0, deleting = false;
+  function tick(){
+    const phrase = phrases[pi];
+    if(!deleting){
+      el.textContent = phrase.slice(0, ++ci);
+      if(ci === phrase.length){ deleting = true; setTimeout(tick, 2000); return; }
+    } else {
+      el.textContent = phrase.slice(0, --ci);
+      if(ci === 0){ deleting = false; pi = (pi+1) % phrases.length; }
+    }
+    setTimeout(tick, deleting ? 40 : 80);
+  }
+  tick();
+}
+
+/* ── SCROLL REVEAL ── */
+function initReveal(){
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('vis'); });
+  }, {threshold:0.1});
+  document.querySelectorAll('.reveal, .standard-block').forEach(el => obs.observe(el));
+
+  const obs2 = new IntersectionObserver(entries => {
+    entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('vis'); });
+  }, {threshold:0.3});
+  ['pc1','pc2','partner-final'].forEach(id => {
+    const el = document.getElementById(id);
+    if(el) obs2.observe(el);
+  });
+}
+
+/* ── HERO FADE ── */
+function initHeroFade(){
+  setTimeout(() => {
+    const d = document.getElementById('hero-desc');
+    if(d) d.classList.add('vis');
+  }, 800);
+  setTimeout(() => {
+    const c = document.getElementById('hero-cta');
+    if(c) c.style.opacity = '1';
+  }, 1500);
+}
+
+/* ── INIT ALL ── */
+function initAll(){
+  initNav();
+  initHeroScene();
+  initTypewriter();
+  initReveal();
+  initHeroFade();
+}
+</script>
 </body>
 </html>
